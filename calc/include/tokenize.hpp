@@ -4,5 +4,5 @@
 
 
 namespace calc {
-std::vector<std::string> tokenize(const std::string &expression);
+std::vector<std::string> tokenize(const std::string &expInput);
 }
