@@ -1,7 +1,11 @@
+#include "calc.hpp"
 #include <iostream>
-#include "add.hpp"
+#include <string>
 
 int main() {
-    std::cout << "2 + 3 = " << add::add(2, 3) << std::endl;
+    std::string expression;
+    std::cout << "Input Expression: ";
+    std::getline(std::cin, expression);
+    std::cout << "Result: " << calc::eval(expression);
     return 0;
 }
