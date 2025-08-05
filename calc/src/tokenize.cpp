@@ -14,8 +14,11 @@ std::vector<Token> tokenize(const std::string &expInput) {
   std::vector<Token> result;
 
   std::string expression = expInput;
-  expression.erase(remove_if(expression.begin(), expression.end(), isspace),
+  expression.erase(remove_if(expression.begin(), expression.end(), ::isspace),
                    expression.end());
+
+  std::transform(expression.begin(), expression.end(), expression.begin(),
+                 ::tolower);
 
   std::string::const_iterator searchStart(expression.cbegin());
 
