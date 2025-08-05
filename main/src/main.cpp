@@ -1,6 +1,9 @@
-#include "calc.hpp"
+// Copyright 2025 Sauvik Roy
+
 #include <iostream>
 #include <string>
+
+#include "calc.hpp"
 
 int main() {
     std::string expression;

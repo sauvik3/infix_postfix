@@ -1,6 +1,7 @@
-add_executable(main 
+project(main)
+
+add_executable(${PROJECT_NAME} 
     src/main.cpp
 )
 
-target_link_libraries(main PRIVATE calc)
-target_include_directories(main PRIVATE ${CMAKE_SOURCE_DIR}/lib/include)
+target_link_libraries(${PROJECT_NAME} PRIVATE calc)

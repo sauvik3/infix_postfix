@@ -1,14 +1,17 @@
-#include "tokenize.hpp"
-#include "tokens.hpp"
+// Copyright 2025 Sauvik Roy
+
 #include <algorithm>
 #include <cctype>
 #include <regex>
 #include <string>
+#include <utility>
 #include <vector>
 
+#include "tokenize.hpp"
+
 namespace calc {
-std::vector<std::string> tokenize(const std::string &expInput) {
-  std::vector<std::string> result;
+std::vector<Token> tokenize(const std::string &expInput) {
+  std::vector<Token> result;
 
   std::string expression = expInput;
   expression.erase(remove_if(expression.begin(), expression.end(), isspace),
@@ -22,7 +25,7 @@ std::vector<std::string> tokenize(const std::string &expInput) {
     // Operand
     if (regex_search(searchStart, expression.cend(), match, re)) {
       searchStart = match.suffix().first;
-      result.push_back(match.str(0));
+      result.push_back(std::make_pair(match.str(0), Operator::OPERAND));
     }
 
     // Operator
@@ -31,7 +34,7 @@ std::vector<std::string> tokenize(const std::string &expInput) {
       std::regex re = std::regex{re_op.first};
       if (regex_search(searchStart, expression.cend(), match, re)) {
         searchStart = match.suffix().first;
-        result.push_back(match.str(0));
+        result.push_back(std::make_pair(match.str(0), re_op.second));
         noMatch = false;
         break;
       }

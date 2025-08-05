@@ -1,3 +1,5 @@
+project(test_calc)
+
 include(FetchContent)
 
 # Fetch GoogleTest v1.17.0
@@ -13,14 +15,11 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Define test executable
-add_executable(test_calc src/test_calc.cpp)
+add_executable(${PROJECT_NAME} src/test_calc.cpp)
 
 # Link test executable with add library and GoogleTest (auto main)
-target_link_libraries(test_calc PRIVATE calc gtest_main)
-
-# Include library headers
-target_include_directories(test_calc PRIVATE ${CMAKE_SOURCE_DIR}/lib/include)
+target_link_libraries(${PROJECT_NAME} PRIVATE calc gtest_main)
 
 # Enable automatic test discovery
 include(GoogleTest)
-gtest_discover_tests(test_calc)
+gtest_discover_tests(${PROJECT_NAME})

@@ -1,9 +1,11 @@
-add_library(calc
-    include/tokens.hpp
+project(calc)
+
+add_library(${PROJECT_NAME}
     src/tokenize.cpp
-    include/tokenize.hpp
+    src/operators.cpp
     src/calc.cpp
-    include/calc.hpp
 )
 
-target_include_directories(calc PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)

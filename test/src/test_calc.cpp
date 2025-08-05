@@ -1,4 +1,7 @@
+// Copyright 2025 Sauvik Roy
+
 #include <gtest/gtest.h>
+
 #include "calc.hpp"
 
 TEST(AddTest, PositiveNumbers) {

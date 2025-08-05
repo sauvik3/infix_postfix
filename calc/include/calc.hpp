@@ -1,6 +1,8 @@
+// Copyright 2025 Sauvik Roy
 #pragma once
+
 #include <string>
 
 namespace calc {
-int eval(const std::string &expression);
+double eval(const std::string &expression);
 }

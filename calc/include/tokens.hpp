@@ -1,3 +1,4 @@
+// Copyright 2025 Sauvik Roy
 #pragma once
 
 #include <map>
@@ -5,7 +6,7 @@
 #include <utility>
 
 namespace calc {
-enum Operator { ADD = 0, SUBTRACT = 1, MULTIPLY = 2, DIVIDE = 3 };
+enum Operator { OPERAND = 0, ADD = 1, SUBTRACT = 2, MULTIPLY = 3, DIVIDE = 4 };
 static const std::map<std::string, enum Operator> operatorRegexMap = {
     std::make_pair("^\\+", Operator::ADD),
     std::make_pair("^\\-", Operator::SUBTRACT),
