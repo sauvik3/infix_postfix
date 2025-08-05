@@ -10,13 +10,74 @@
 #include "tokens.hpp"
 
 namespace calc {
+int comparePrecedence(const Token &token1, const Token &token2) {
+  int prec1 = calc::operatorPrecedence.at(token1.second);
+  int prec2 = calc::operatorPrecedence.at(token2.second);
+
+  return (prec1 > prec2 ? 1 : (prec1 == prec2 ? 0 : -1));
+}
+
 std::stack<Token> infixToPostfix(const std::vector<Token> &tokens) {
   std::stack<Token> postfix;
+  std::stack<Token> opStack;
 
-  for (const auto &token : tokens) {
-    if (token.second == Operator::OPERAND) {
-      postfix.push(token);
+  for (const auto &currToken : tokens) {
+    if (currToken.second == Operator::OPERAND) {
+      postfix.push(currToken);  // 1. Operand
+    } else {
+      if (opStack.empty()) {
+        opStack.push(currToken);  // 2. Stack is empty
+      } else {
+        auto &stackTop = opStack.top();
+        int priority = calc::comparePrecedence(stackTop, currToken);
+        if (currToken.second != Operator::R_PAR &&
+            ((stackTop.second == Operator::L_PAR) || priority == 1)) {
+          opStack.push(currToken);  // 3. Left Paranthesis on Stack  OR
+                                    // 4. Scanned operator has higher precedence
+        } else {
+          if (currToken.second == Operator::L_PAR) {
+            opStack.push(currToken);  // 5. Curr token = Left Paranthesis
+          } else if (currToken.second == Operator::R_PAR) {
+            while (stackTop.second != Operator::L_PAR) {
+              postfix.push(stackTop);   // 6. Curr token = Right Paranthesis
+              opStack.pop();
+              if (opStack.empty()) {
+                break;
+              }
+              stackTop = opStack.top();
+            }
+            if (stackTop.second == Operator::L_PAR) {
+              opStack.pop();  // 7. Remove Left Paranthesis from Stack
+            }
+          } else {
+            while (priority < 1) {
+              postfix.push(
+                  stackTop);  // 8. Pop all operators with higher precedence
+              opStack.pop();
+              if (opStack.empty()) {
+                break;
+              }
+              stackTop = opStack.top();
+              if (stackTop.second == Operator::L_PAR) {
+                break;
+              }
+              priority = calc::comparePrecedence(stackTop, currToken);
+            }
+            opStack.push(currToken);
+          }
+        }
+      }
     }
+  }
+
+  while (!opStack.empty()) {
+    auto &stackTop = opStack.top();
+    postfix.push(stackTop);   // 9. Finally pop the stack
+    opStack.pop();
+    if (opStack.empty()) {
+      break;
+    }
+    stackTop = opStack.top();
   }
 
   return postfix;
