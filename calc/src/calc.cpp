@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include <iostream>
+
 #include "calc.hpp"
 #include "tokenize.hpp"
 #include "tokens.hpp"
@@ -83,11 +85,25 @@ std::stack<Token> infixToPostfix(const std::vector<Token> &tokens) {
   return postfix;
 }
 
+// Function to print elements from bottom to top (and preserve order)
+void printStack(std::stack<Token> &s) {
+  if (s.empty()) {
+    return;
+  }
+  auto x = s.top();
+  s.pop();
+  printStack(s);
+  std::cout << x.first << " ";
+  s.push(x);
+}
+
 double eval(const std::string &expression) {
   double res = 0.0;
   std::vector<Token> tokens = calc::tokenize(expression);
 
   std::stack<Token> postfix = calc::infixToPostfix(tokens);
+  std::stack<Token> postfixCopy = postfix;
+  calc::printStack(postfixCopy);
 
   while (!postfix.empty()) {
     auto token = postfix.top();
