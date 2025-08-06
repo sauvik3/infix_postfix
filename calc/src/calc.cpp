@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "calc.hpp"
+#include "operators.hpp"
 #include "tokenize.hpp"
 #include "tokens.hpp"
 
@@ -97,6 +98,60 @@ void printStack(std::stack<Token> &s) {
   s.push(x);
 }
 
+double evalPostfix(const std::stack<Token> &postfix) {
+  std::stack<Token> postfixCopy = postfix;
+  std::stack<Token> postfixReverse;
+  while (!postfixCopy.empty()) {
+    auto token = postfixCopy.top();
+    postfixReverse.push(token);
+    postfixCopy.pop();
+  }
+
+  std::stack<double> evalStack;
+  while (!postfixReverse.empty()) {
+    auto token = postfixReverse.top();
+    if (token.second == Operator::OPERAND) {
+      double val = std::atof(token.first.c_str());
+      evalStack.push(val);
+    } else if (token.second == Operator::ADD) {
+      double opn1 = evalStack.top();
+      evalStack.pop();
+      double opn2 = evalStack.top();
+      evalStack.pop();
+      double val = calc::add(opn2, opn1);
+      evalStack.push(val);
+    } else if (token.second == Operator::SUBTRACT) {
+      double opn1 = evalStack.top();
+      evalStack.pop();
+      double opn2 = evalStack.top();
+      evalStack.pop();
+      double val = calc::subtract(opn2, opn1);
+      evalStack.push(val);
+    } else if (token.second == Operator::MULTIPLY) {
+      double opn1 = evalStack.top();
+      evalStack.pop();
+      double opn2 = evalStack.top();
+      evalStack.pop();
+      double val = calc::multiply(opn2, opn1);
+      evalStack.push(val);
+    } else if (token.second == Operator::DIVIDE) {
+      double opn1 = evalStack.top();
+      evalStack.pop();
+      double opn2 = evalStack.top();
+      evalStack.pop();
+      double val = calc::divide(opn2, opn1);
+      evalStack.push(val);
+    } else if (token.second == Operator::INVERSE) {
+      double opn1 = evalStack.top();
+      evalStack.pop();
+      double val = calc::inverse(opn1);
+      evalStack.push(val);
+    }
+    postfixReverse.pop();
+  }
+  return evalStack.top();
+}
+
 double eval(const std::string &expression) {
   double res = 0.0;
   std::vector<Token> tokens = calc::tokenize(expression);
@@ -104,14 +159,7 @@ double eval(const std::string &expression) {
   std::stack<Token> postfix = calc::infixToPostfix(tokens);
   std::stack<Token> postfixCopy = postfix;
   calc::printStack(postfixCopy);
-
-  while (!postfix.empty()) {
-    auto token = postfix.top();
-    if (token.second == Operator::OPERAND) {
-      res += std::atof(token.first.c_str());
-    }
-    postfix.pop();
-  }
+  res = calc::evalPostfix(postfix);
 
   return res;
 }

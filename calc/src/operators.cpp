@@ -3,13 +3,14 @@
 #include "operators.hpp"
 
 namespace calc {
-template <typename T> T add(T a, T b) { return a + b; }
+template <> double add(double a, double b) { return a + b; }
 
-template <typename T> T subtract(T a, T b) { return a - b; }
+template <> double subtract(double a, double b) { return a - b; }
 
-template <typename T> T multiply(T a, T b) { return a * b; }
+template <> double multiply(double a, double b) { return a * b; }
 
-template <typename T> T divide(T a, T b) { return a / b; }
+template <> double divide(double a, double b) { return a / b; }
 
-template <typename T> T inverse(T a) { return 1.0 / a; }
+template <> double inverse(double a) { return 1.0 / a; }
+
 }   // namespace calc

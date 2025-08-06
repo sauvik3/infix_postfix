@@ -4,7 +4,7 @@
             "name": "Debug GoogleTest (All Tests)",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/test/Debug/test_add.exe",
+            "program": "${workspaceFolder}/build/test/Debug/test_calc.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
