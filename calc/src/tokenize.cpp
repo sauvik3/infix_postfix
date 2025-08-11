@@ -22,13 +22,17 @@ std::vector<Token> tokenize(const std::string &expInput) {
 
   std::string::const_iterator searchStart(expression.cbegin());
 
+  // Can't have an operand following a right-parenthesis
+  Token prevToken = std::make_pair("0", Operator::OPERAND);
   while (searchStart != expression.cend()) {
     std::regex re = std::regex{calc::operandRegex};
     std::smatch match;
     // Operand
-    if (regex_search(searchStart, expression.cend(), match, re)) {
+    if (prevToken.second != Operator::R_PAR &&
+        regex_search(searchStart, expression.cend(), match, re)) {
       searchStart = match.suffix().first;
       result.push_back(std::make_pair(match.str(0), Operator::OPERAND));
+      prevToken = std::make_pair(match.str(0), Operator::OPERAND);
     }
 
     // Operator
@@ -39,6 +43,7 @@ std::vector<Token> tokenize(const std::string &expInput) {
         searchStart = match.suffix().first;
         result.push_back(std::make_pair(match.str(0), re_op.second));
         noMatch = false;
+        prevToken = std::make_pair(match.str(0), re_op.second);
         break;
       }
     }

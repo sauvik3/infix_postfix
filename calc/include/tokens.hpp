@@ -25,7 +25,7 @@ static const std::map<std::string, enum Operator> operatorRegexMap = {
     std::make_pair("^\\(", Operator::L_PAR),
     std::make_pair("^\\)", Operator::R_PAR),
 };
-static const char operandRegex[] = "^(-?)(0|([1-9][0-9]*))(\\.[0-9]+)?";
+static const char operandRegex[] = R"(^[+-]?(?:\d+(?:\.\d*)?|\.\d+))";
 
 static const std::map<enum Operator, int> operatorPrecedence = {
     std::make_pair(Operator::ADD, 2),

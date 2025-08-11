@@ -15,7 +15,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Define test executable
-add_executable(${PROJECT_NAME} src/test_calc.cpp)
+add_executable(${PROJECT_NAME} src/test_calc.cpp src/test_tokenizer.cpp)
 
 # Link test executable with add library and GoogleTest (auto main)
 target_link_libraries(${PROJECT_NAME} PRIVATE calc gtest_main)

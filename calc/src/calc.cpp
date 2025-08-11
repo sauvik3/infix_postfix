@@ -108,6 +108,7 @@ double evalPostfix(const std::stack<Token> &postfix) {
   }
 
   std::stack<double> evalStack;
+  evalStack.push(0);
   while (!postfixReverse.empty()) {
     auto token = postfixReverse.top();
     if (token.second == Operator::OPERAND) {
