@@ -17,4 +17,6 @@ template <typename T> T multiply(T a, T b);
 template <typename T> T divide(T a, T b);
 
 template <typename T> T inverse(T a);
+
+template <typename T> T negative(T a);
 }   // namespace calc

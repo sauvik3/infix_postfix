@@ -13,4 +13,6 @@ template <> double divide(double a, double b) { return a / b; }
 
 template <> double inverse(double a) { return 1.0 / a; }
 
+template <> double negative(double a) { return -1.0 * a; }
+
 }   // namespace calc

@@ -37,13 +37,26 @@ std::vector<Token> tokenize(const std::string &expInput) {
 
     // Operator
     bool noMatch = true;
-    for (const auto &re_op : calc::operatorRegexMap) {
-      std::regex re = std::regex{re_op.first};
+    for (const auto &[re_op_str, re_op_type] : calc::operatorRegexMap) {
+      std::regex re = std::regex{re_op_str};
       if (regex_search(searchStart, expression.cend(), match, re)) {
         searchStart = match.suffix().first;
-        result.push_back(std::make_pair(match.str(0), re_op.second));
+        if (re_op_type == Operator::SUBTRACT) {
+          // Binary Operators or Left Parenthesis
+          if (prevToken.second == Operator::ADD ||
+              prevToken.second == Operator::SUBTRACT ||
+              prevToken.second == Operator::MULTIPLY ||
+              prevToken.second == Operator::DIVIDE ||
+              prevToken.second == Operator::L_PAR) {
+            result.push_back(std::make_pair(match.str(0), Operator::NEGATIVE));
+          } else {
+            result.push_back(std::make_pair(match.str(0), re_op_type));
+          }
+        } else {
+          result.push_back(std::make_pair(match.str(0), re_op_type));
+        }
         noMatch = false;
-        prevToken = std::make_pair(match.str(0), re_op.second);
+        prevToken = std::make_pair(match.str(0), re_op_type);
         break;
       }
     }

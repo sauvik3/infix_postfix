@@ -128,4 +128,19 @@ TEST(TokenizerTest, TokRightPar) {
       std::make_pair(")", calc::Operator::R_PAR)};
   EXPECT_EQ(calc::tokenize(")"), expect);
 }
+
+TEST(TokenizerTest, TokUnaryMinus) {
+  std::vector<calc::Token> expect = {
+      std::make_pair("2", calc::Operator::OPERAND),
+      std::make_pair("-", calc::Operator::SUBTRACT),
+      std::make_pair("1", calc::Operator::OPERAND),
+      std::make_pair("/", calc::Operator::DIVIDE),
+      std::make_pair("-", calc::Operator::NEGATIVE),
+      std::make_pair("(", calc::Operator::L_PAR),
+      std::make_pair("-3", calc::Operator::OPERAND),
+      std::make_pair("+", calc::Operator::ADD),
+      std::make_pair("1.5", calc::Operator::OPERAND),
+      std::make_pair(")", calc::Operator::R_PAR)};
+  EXPECT_EQ(calc::tokenize("2-1/-(-3+1.5)"), expect);
+}
 }   // namespace tokenizer_tests

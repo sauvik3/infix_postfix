@@ -147,6 +147,11 @@ double evalPostfix(const std::stack<Token> &postfix) {
       evalStack.pop();
       double val = calc::inverse(opn1);
       evalStack.push(val);
+    } else if (token.second == Operator::NEGATIVE) {
+      double opn1 = evalStack.top();
+      evalStack.pop();
+      double val = calc::negative(opn1);
+      evalStack.push(val);
     }
     postfixReverse.pop();
   }
