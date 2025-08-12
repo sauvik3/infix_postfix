@@ -37,4 +37,9 @@ if (MSVC)
         DEPENDS test_calc
         COMMENT "Generating coverage report (Cobertura XML) with OpenCppCoverage"
     )
+else()
+    add_custom_target(coverage
+        COMMAND ${CMAKE_COMMAND} -E echo "Coverage only supported on MSVC + OpenCppCoverage in this config."
+        COMMENT "Coverage target is a placeholder for non-MSVC builds"
+    )
 endif()

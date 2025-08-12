@@ -1,0 +1,76 @@
+version: 1.0.{build}
+image: Visual Studio 2022
+
+environment:
+  BUILD_DIR: build
+  CONFIGURATION: Debug
+  OPENCPPCOVERAGE_PATH: C:\Tools\OpenCppCoverage\OpenCppCoverage.exe
+
+install:
+  # Download and install OpenCppCoverage
+  - ps: |
+      $url = "https://github.com/OpenCppCoverage/OpenCppCoverage/releases/download/release-0.9.9.0/OpenCppCoverageSetup-x64-0.9.9.0.exe"
+      Invoke-WebRequest $url -OutFile OpenCppCoverageSetup.exe
+      Start-Process OpenCppCoverageSetup.exe -ArgumentList "/SILENT", "/DIR=C:\Tools\OpenCppCoverage" -Wait
+      if (!(Test-Path $env:OPENCPPCOVERAGE_PATH)) {
+        Write-Error "OpenCppCoverage not installed correctly."
+        exit 1
+      }
+
+before_build:
+  - cmd: cmake -S . -B %BUILD_DIR% -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DOPENCPPCOVERAGE_PATH=%OPENCPPCOVERAGE_PATH%
+
+build_script:
+  - cmd: cmake --build %BUILD_DIR%
+
+test_script:
+- ps: |
+    $coverageOutput = "$env:BUILD_DIR\coverage.xml"
+    $ctestOutput = "$env:BUILD_DIR\ctest_output.txt"
+
+    # Run tests from the build directory
+    ctest --test-dir "$env:BUILD_DIR" -C "$env:CONFIGURATION" --output-on-failure | Tee-Object -FilePath $ctestOutput
+
+    # Generate coverage via CMake target (calls OpenCppCoverage)
+    cmake --build "$env:BUILD_DIR" --target coverage --config "$env:CONFIGURATION"
+
+    if (!(Test-Path $coverageOutput)) {
+        throw "Coverage file not generated"
+    }
+
+after_test:
+  # Upload coverage to Codecov securely
+  - ps: |
+      $coverageFile = Join-Path $env:BUILD_DIR "coverage.xml"
+      if (Test-Path $coverageFile) {
+        Invoke-WebRequest -Uri "https://uploader.codecov.io/latest/windows/codecov.exe" -OutFile codecov.exe
+        .\codecov.exe -f $coverageFile -t "$env:CODECOV_TOKEN"
+      } else {
+        Write-Host "No coverage file found. Skipping Codecov upload."
+      }
+
+after_build:
+  # Create binaries.zip
+  - ps: |
+      $releaseDir = Join-Path $env:APPVEYOR_BUILD_FOLDER "$env:BUILD_DIR\$env:CONFIGURATION"
+      $buildDir   = Join-Path $env:APPVEYOR_BUILD_FOLDER $env:BUILD_DIR
+
+      $artifactsDir = Join-Path $env:APPVEYOR_BUILD_FOLDER "artifacts"
+      New-Item -ItemType Directory -Path $artifactsDir -Force | Out-Null
+
+      $binZipPath = Join-Path $artifactsDir "binaries.zip"
+      Add-Type -AssemblyName System.IO.Compression.FileSystem
+      [IO.Compression.ZipFile]::CreateFromDirectory($buildDir, $binZipPath)
+
+  # Copy coverage.xml to artifacts
+  - ps: |
+      $coverageFile = Join-Path $env:APPVEYOR_BUILD_FOLDER "$env:BUILD_DIR\coverage.xml"
+      if (Test-Path $coverageFile) {
+        Copy-Item $coverageFile (Join-Path $env:APPVEYOR_BUILD_FOLDER "artifacts\coverage.xml") -Force
+      }
+
+artifacts:
+  - path: artifacts\binaries.zip
+    name: binaries
+  - path: artifacts\coverage.xml
+    name: coverage

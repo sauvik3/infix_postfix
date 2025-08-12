@@ -1,5 +1,8 @@
 # C++ Calculator Project (CMake + GoogleTest + OpenCppCoverage)
 
+[![Build status](https://ci.appveyor.com/api/projects/status/wm4wo8p7im7frq61/branch/main?svg=true)](https://ci.appveyor.com/project/sauvik3/infix-postfix/branch/main)
+[![codecov](https://codecov.io/github/sauvik3/infix_postfix/graph/badge.svg?token=MBZSWKKJUQ)](https://codecov.io/github/sauvik3/infix_postfix)
+
 ## Project Overview
 
 This project demonstrates a well-structured **C++** application built with **CMake**, showcasing the following components:

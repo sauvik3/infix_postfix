@@ -1,4 +1,4 @@
-project(test_calc)
+project(test_calc LANGUAGES CXX)
 
 include(FetchContent)
 
@@ -15,11 +15,28 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Define test executable
-add_executable(${PROJECT_NAME} src/test_calc.cpp src/test_tokenizer.cpp)
+add_executable(${PROJECT_NAME}
+    src/test_calc.cpp
+    src/test_tokenizer.cpp
+)
 
-# Link test executable with add library and GoogleTest (auto main)
+# Link test executable with library and GoogleTest
 target_link_libraries(${PROJECT_NAME} PRIVATE calc gtest_main)
 
-# Enable automatic test discovery
+# Make sure the binary ends up in the main build directory (so CTest finds it)
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+)
+
+# Enable testing
+enable_testing()
+
+# Register the test explicitly with CTest
 include(GoogleTest)
-gtest_discover_tests(${PROJECT_NAME})
+gtest_discover_tests(${PROJECT_NAME}
+    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+    PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+)
+
+# Also add a simple named test entry for coverage
+add_test(NAME test_calc COMMAND ${PROJECT_NAME})
