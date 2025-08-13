@@ -152,6 +152,48 @@ double evalPostfix(const std::stack<Token> &postfix) {
       evalStack.pop();
       double val = calc::negative(opn1);
       evalStack.push(val);
+    } else if (token.second == Operator::POWER) {
+      double opn1 = evalStack.top();
+      evalStack.pop();
+      double opn2 = evalStack.top();
+      evalStack.pop();
+      double val = calc::power(opn2, opn1);
+      evalStack.push(val);
+    } else if (token.second == Operator::SQRT) {
+      double opn1 = evalStack.top();
+      evalStack.pop();
+      double val = calc::sqrt(opn1);
+      evalStack.push(val);
+    } else if (token.second == Operator::ABS) {
+      double opn1 = evalStack.top();
+      evalStack.pop();
+      double val = calc::abs(opn1);
+      evalStack.push(val);
+    } else if (token.second == Operator::SIN) {
+      double opn1 = evalStack.top();
+      evalStack.pop();
+      double val = calc::sin(opn1);
+      evalStack.push(val);
+    } else if (token.second == Operator::COS) {
+      double opn1 = evalStack.top();
+      evalStack.pop();
+      double val = calc::cos(opn1);
+      evalStack.push(val);
+    } else if (token.second == Operator::TAN) {
+      double opn1 = evalStack.top();
+      evalStack.pop();
+      double val = calc::tan(opn1);
+      evalStack.push(val);
+    } else if (token.second == Operator::LOG) {
+      double opn1 = evalStack.top();
+      evalStack.pop();
+      double val = calc::log(opn1);
+      evalStack.push(val);
+    } else if (token.second == Operator::LN) {
+      double opn1 = evalStack.top();
+      evalStack.pop();
+      double val = calc::ln(opn1);
+      evalStack.push(val);
     }
     postfixReverse.pop();
   }

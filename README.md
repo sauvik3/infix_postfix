@@ -35,26 +35,35 @@ The goal is to serve as both a working calculator application and a reference fo
 ---
 
 ### 2. Supported Operations
-| Operator | Description                                | Example                  |
-|----------|--------------------------------------------|--------------------------|
-| `+`      | Addition                                   | `3 + 4` = `7`            |
-| `-`      | Subtraction                                | `5 - 2` = `3`            |
-| `*`      | Multiplication                             | `2 * 3` = `6`            |
-| `/`      | Division                                   | `10 / 2` = `5`           |
-| `inv(x)` | Multiplicative inverse (1 / x)             | `inv(4)` = `0.25`        |
-| `-` (unary) | Negation (change sign)                  | `-5` = `-5`              |
+| Operator     | Description                                        | Example                     |
+|--------------|----------------------------------------------------|-----------------------------|
+| `+`          | Addition                                           | `3 + 4` = `7`               |
+| `-`          | Subtraction                                        | `5 - 2` = `3`               |
+| `*`          | Multiplication                                     | `2 * 3` = `6`               |
+| `/`          | Division                                           | `10 / 2` = `5`              |
+| `^`          | Power (exponentiation)                             | `2 ^ 3` = `8`               |
+| `sqrt(x)`    | Square root                                        | `sqrt(9)` = `3`             |
+| `inv(x)`     | Multiplicative inverse (1 / x)                     | `inv(4)` = `0.25`           |
+| `-` (unary)  | Negation (change sign)                             | `-5` = `-5`                 |
+| `abs(x)`     | Absolute value                                     | `abs(-5)` = `5`             |
+| `sin(x)`     | Sine (x in radians)                                | `sin(1.5707)` = `1`         |
+| `cos(x)`     | Cosine (x in radians)                              | `cos(0)` = `1`              |
+| `tan(x)`     | Tangent (x in radians)                             | `tan(0.7853)` = `1`         |
+| `log(x)`     | Base-10 logarithm                                  | `log(100)` = `2`            |
+| `ln(x)`      | Natural logarithm (base e)                         | `ln(2.7183)` = `1`          |
+| `(`, `)`     | Parentheses (grouping to control precedence)       | `(2 + 3) * 4` = `20`        |
 
 
 ---
 
 ### 3. Operator Precedence and Associativity
-| Precedence | Operator(s)        | Associativity | Notes                                   |
-|------------|--------------------|--------------|-----------------------------------------|
-| 1 (highest)| `()`               | Left-to-right| Parentheses override precedence         |
-| 2          | `inv`              | Right-to-left| Unary function for multiplicative inverse|
-| 3          | `-` (unary)        | Right-to-left| Negates a single operand                |
-| 4          | `*`, `/`           | Left-to-right| Multiplication and division             |
-| 5 (lowest) | `+`, `-` (binary)  | Left-to-right| Addition and subtraction                |
+| Precedence | Operator(s)                                     | Associativity   | Notes                                                            |
+|------------|-------------------------------------------------|-----------------|------------------------------------------------------------------|
+| 0 (highest)| `()`, `(`, `)`                                  | Left-to-right   | Parentheses override precedence                                  |
+| 1          | `^`, `sqrt`, `inv`, `abs`, `sin`, `cos`, `tan`, `log`, `ln` | Right-to-left | Exponentiation, square root, inverse, absolute, trig, and logs   |
+| 2          | `-` (unary)                                     | Right-to-left   | Negates a single operand                                         |
+| 3          | `*`, `/`                                        | Left-to-right   | Multiplication and division                                      |
+| 4 (lowest) | `+`, `-` (binary)                               | Left-to-right   | Addition and subtraction                                         |
 
 
 ---
@@ -107,7 +116,7 @@ cmake --build build --target coverage --config Debug
 
 Output:
 ```
-build\\coverage.xml
+build\coverage.xml
 ```
 
 Test sources, main sources, and Visual Studio system files are excluded.
