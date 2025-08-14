@@ -44,15 +44,13 @@ TEST(CalcTest, Expression11) {
   EXPECT_EQ(calc::eval("1+inv(tan0.5^2)"), calc::eval("-inv(-sin0.5^2)"));
 }
 
-TEST(CalcTest, Expression12) {
-  EXPECT_EQ(calc::eval("sqrt(2^4)"), 4);
-}
+TEST(CalcTest, Expression12) { EXPECT_EQ(calc::eval("sqrt(2^4)"), 4); }
 
-TEST(CalcTest, Expression13) {
-  EXPECT_EQ(calc::eval("log(100)"), 2);
-}
+TEST(CalcTest, Expression13) { EXPECT_EQ(calc::eval("log(100)"), 2); }
 
-TEST(CalcTest, Expression14) {
-  EXPECT_EQ(calc::eval("ln(1)"), 0);
-}
+TEST(CalcTest, Expression14) { EXPECT_EQ(calc::eval("ln(1)"), 0); }
+
+TEST(CalcTest, Expression15) { EXPECT_EQ(calc::eval("2^3^2"), 512); }
+
+TEST(CalcTest, Expression16) { EXPECT_EQ(calc::eval("2----5"), 7); }
 }   // namespace tokenizer_tests
