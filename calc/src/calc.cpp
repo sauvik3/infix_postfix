@@ -20,6 +20,16 @@ int comparePrecedence(const Token &token1, const Token &token2) {
   return (prec1 > prec2 ? 1 : (prec1 == prec2 ? 0 : -1));
 }
 
+bool isRightAssociative(const Token &tok) {
+  switch (tok.second) {
+  case Operator::NEGATIVE:
+  case Operator::POWER:
+    return true;  // right-associative
+  default:
+    return false;  // all others are left-associative
+  }
+}
+
 std::stack<Token> infixToPostfix(const std::vector<Token> &tokens) {
   std::stack<Token> postfix;
   std::stack<Token> opStack;
@@ -27,6 +37,19 @@ std::stack<Token> infixToPostfix(const std::vector<Token> &tokens) {
   for (const auto &currToken : tokens) {
     if (currToken.second == Operator::OPERAND) {
       postfix.push(currToken);  // 1. Operand
+
+      // Immediately pop any function operators after an operand
+      if (!opStack.empty()) {
+        const Token &topTok = opStack.top();
+        if (topTok.second == Operator::SIN || topTok.second == Operator::COS ||
+            topTok.second == Operator::TAN || topTok.second == Operator::ABS ||
+            topTok.second == Operator::LOG || topTok.second == Operator::LN ||
+            topTok.second == Operator::SQRT ||
+            topTok.second == Operator::INVERSE) {
+          postfix.push(topTok);
+          opStack.pop();
+        }
+      }
     } else {
       if (opStack.empty()) {
         opStack.push(currToken);  // 2. Stack is empty
@@ -35,36 +58,38 @@ std::stack<Token> infixToPostfix(const std::vector<Token> &tokens) {
         int priority = calc::comparePrecedence(stackTop, currToken);
         if (currToken.second != Operator::R_PAR &&
             ((stackTop.second == Operator::L_PAR) || priority == 1)) {
-          opStack.push(currToken);  // 3. Left Paranthesis on Stack  OR
+          opStack.push(currToken);  // 3. Left Parenthesis on Stack  OR
                                     // 4. Scanned operator has higher precedence
         } else {
           if (currToken.second == Operator::L_PAR) {
-            opStack.push(currToken);  // 5. Curr token = Left Paranthesis
+            opStack.push(currToken);  // 5. Curr token = Left Parenthesis
           } else if (currToken.second == Operator::R_PAR) {
             while (stackTop.second != Operator::L_PAR) {
-              postfix.push(stackTop);   // 6. Curr token = Right Paranthesis
+              postfix.push(stackTop);  // 6. Curr token = Right Parenthesis
               opStack.pop();
               if (opStack.empty()) {
                 break;
               }
               stackTop = opStack.top();
             }
-            if (stackTop.second == Operator::L_PAR) {
-              opStack.pop();  // 7. Remove Left Paranthesis from Stack
+            if (!opStack.empty() && stackTop.second == Operator::L_PAR) {
+              opStack.pop();  // 7. Remove Left Parenthesis from Stack
             }
           } else {
-            while (priority < 1) {
-              postfix.push(
-                  stackTop);  // 8. Pop all operators with higher precedence
-              opStack.pop();
-              if (opStack.empty()) {
-                break;
-              }
-              stackTop = opStack.top();
-              if (stackTop.second == Operator::L_PAR) {
-                break;
-              }
+            while (!opStack.empty() && stackTop.second != Operator::L_PAR) {
               priority = calc::comparePrecedence(stackTop, currToken);
+              if ((!isRightAssociative(currToken) && priority <= 0) ||
+                  (isRightAssociative(currToken) && priority < 0)) {
+                postfix.push(
+                    stackTop);  // 8. Pop all operators with higher precedence
+                opStack.pop();
+                if (opStack.empty()) {
+                  break;
+                }
+                stackTop = opStack.top();
+              } else {
+                break;
+              }
             }
             opStack.push(currToken);
           }
@@ -74,13 +99,8 @@ std::stack<Token> infixToPostfix(const std::vector<Token> &tokens) {
   }
 
   while (!opStack.empty()) {
-    auto &stackTop = opStack.top();
-    postfix.push(stackTop);   // 9. Finally pop the stack
+    postfix.push(opStack.top());  // 9. Finally pop the stack
     opStack.pop();
-    if (opStack.empty()) {
-      break;
-    }
-    stackTop = opStack.top();
   }
 
   return postfix;

@@ -13,4 +13,5 @@ void printStack(std::stack<Token> &s);
 std::stack<Token> infixToPostfix(const std::vector<Token> &tokens);
 double evalPostfix(const std::stack<Token> &postfix);
 double eval(const std::string &expression);
+bool isRightAssociative(const Token &tok);
 }   // namespace calc
