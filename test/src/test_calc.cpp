@@ -28,20 +28,22 @@ TEST(CalcTest, Expression6) {
   EXPECT_NEAR(calc::eval("-.2+005.-(1/(3+-inv(2.0--7.5)))*5."), 3.07273, 1e-5);
 }
 
-TEST(CalcTest, Expression7) { EXPECT_EQ(calc::eval("16/-2^4"), 1); }
+TEST(CalcTest, Expression7) { EXPECT_EQ(calc::eval("16/-2^4"), -1); }
 
 TEST(CalcTest, Expression8) {
   EXPECT_EQ(calc::eval("abs(sin(-0.5))"), calc::eval("sin(0.5)"));
 }
 
-TEST(CalcTest, Expression9) { EXPECT_EQ(calc::eval("sin0.5^2+cos0.5^2"), 1); }
+TEST(CalcTest, Expression9) {
+  EXPECT_EQ(calc::eval("(sin0.5)^2+(cos0.5)^2"), 1);
+}
 
 TEST(CalcTest, Expression10) {
   EXPECT_EQ(calc::eval("sin0.5/cos0.5"), calc::eval("tan0.5"));
 }
 
 TEST(CalcTest, Expression11) {
-  EXPECT_EQ(calc::eval("1+inv(tan0.5^2)"), calc::eval("-inv(-sin0.5^2)"));
+  EXPECT_EQ(calc::eval("1+inv(tan0.5)^2"), calc::eval("-inv-(sin0.5)^2"));
 }
 
 TEST(CalcTest, Expression12) { EXPECT_EQ(calc::eval("sqrt(2^4)"), 4); }
@@ -53,4 +55,12 @@ TEST(CalcTest, Expression14) { EXPECT_EQ(calc::eval("ln(1)"), 0); }
 TEST(CalcTest, Expression15) { EXPECT_EQ(calc::eval("2^3^2"), 512); }
 
 TEST(CalcTest, Expression16) { EXPECT_EQ(calc::eval("2----5"), 7); }
+
+TEST(CalcTest, Expression17) {
+  EXPECT_NEAR(calc::eval("sinabs-.5"), 0.47942, 1e-5);
+}
+
+TEST(CalcTest, Expression18) {
+  EXPECT_NEAR(calc::eval("sincostan-.5^3"), 0.83718, 1e-5);
+}
 }   // namespace tokenizer_tests

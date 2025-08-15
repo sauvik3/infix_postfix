@@ -18,7 +18,8 @@ TEST(TokenizerTest, TokPositiveDouble) {
 
 TEST(TokenizerTest, TokNegativeDouble) {
   std::vector<calc::Token> expect = {
-      std::make_pair("-1.0", calc::Operator::OPERAND)};
+      std::make_pair("-", calc::Operator::NEGATIVE),
+      std::make_pair("1.0", calc::Operator::OPERAND)};
   EXPECT_EQ(calc::tokenize("-1.0"), expect);
 }
 
@@ -30,7 +31,8 @@ TEST(TokenizerTest, TokPositiveInteger) {
 
 TEST(TokenizerTest, TokNegativeInteger) {
   std::vector<calc::Token> expect = {
-      std::make_pair("-1", calc::Operator::OPERAND)};
+      std::make_pair("-", calc::Operator::NEGATIVE),
+      std::make_pair("1", calc::Operator::OPERAND)};
   EXPECT_EQ(calc::tokenize("-1"), expect);
 }
 
@@ -48,7 +50,8 @@ TEST(TokenizerTest, TokLeadZeroPositiveInteger) {
 
 TEST(TokenizerTest, TokLeadZeroNegativeInteger) {
   std::vector<calc::Token> expect = {
-      std::make_pair("-01", calc::Operator::OPERAND)};
+      std::make_pair("-", calc::Operator::NEGATIVE),
+      std::make_pair("01", calc::Operator::OPERAND)};
   EXPECT_EQ(calc::tokenize("-01"), expect);
 }
 
@@ -60,7 +63,8 @@ TEST(TokenizerTest, TokLeadZeroPositiveDouble) {
 
 TEST(TokenizerTest, TokLeadZeroNegativeDouble) {
   std::vector<calc::Token> expect = {
-      std::make_pair("-01.0", calc::Operator::OPERAND)};
+      std::make_pair("-", calc::Operator::NEGATIVE),
+      std::make_pair("01.0", calc::Operator::OPERAND)};
   EXPECT_EQ(calc::tokenize("-01.0"), expect);
 }
 
@@ -72,13 +76,15 @@ TEST(TokenizerTest, TokTrailDecPositiveInteger) {
 
 TEST(TokenizerTest, TokTrailDecNegativeInteger) {
   std::vector<calc::Token> expect = {
-      std::make_pair("-1.", calc::Operator::OPERAND)};
+      std::make_pair("-", calc::Operator::NEGATIVE),
+      std::make_pair("1.", calc::Operator::OPERAND)};
   EXPECT_EQ(calc::tokenize("-1."), expect);
 }
 
 TEST(TokenizerTest, TokLeadDecNegativeInteger) {
   std::vector<calc::Token> expect = {
-      std::make_pair("-.1", calc::Operator::OPERAND)};
+      std::make_pair("-", calc::Operator::NEGATIVE),
+      std::make_pair(".1", calc::Operator::OPERAND)};
   EXPECT_EQ(calc::tokenize("-.1"), expect);
 }
 
@@ -95,8 +101,10 @@ TEST(TokenizerTest, TokOperatorAdd) {
 
 TEST(TokenizerTest, TokOperatorSubtract) {
   std::vector<calc::Token> expect = {
-      std::make_pair("-", calc::Operator::SUBTRACT)};
-  EXPECT_EQ(calc::tokenize("-"), expect);
+      std::make_pair("0", calc::Operator::OPERAND),
+      std::make_pair("-", calc::Operator::SUBTRACT),
+      std::make_pair("0", calc::Operator::OPERAND)};
+  EXPECT_EQ(calc::tokenize("0-0"), expect);
 }
 
 TEST(TokenizerTest, TokOperatorMultiply) {
@@ -109,6 +117,12 @@ TEST(TokenizerTest, TokOperatorDivide) {
   std::vector<calc::Token> expect = {
       std::make_pair("/", calc::Operator::DIVIDE)};
   EXPECT_EQ(calc::tokenize("/"), expect);
+}
+
+TEST(TokenizerTest, TokOperatorUnaryMinus) {
+  std::vector<calc::Token> expect = {
+      std::make_pair("-", calc::Operator::NEGATIVE)};
+  EXPECT_EQ(calc::tokenize("-"), expect);
 }
 
 TEST(TokenizerTest, TokOperatorInverse) {
@@ -185,7 +199,8 @@ TEST(TokenizerTest, TokUnaryMinus) {
       std::make_pair("/", calc::Operator::DIVIDE),
       std::make_pair("-", calc::Operator::NEGATIVE),
       std::make_pair("(", calc::Operator::L_PAR),
-      std::make_pair("-3", calc::Operator::OPERAND),
+      std::make_pair("-", calc::Operator::NEGATIVE),
+      std::make_pair("3", calc::Operator::OPERAND),
       std::make_pair("+", calc::Operator::ADD),
       std::make_pair("1.5", calc::Operator::OPERAND),
       std::make_pair(")", calc::Operator::R_PAR),
@@ -198,9 +213,24 @@ TEST(TokenizerTest, TokPowerWithUnaryMinus) {
   std::vector<calc::Token> expect = {
       std::make_pair("16", calc::Operator::OPERAND),
       std::make_pair("/", calc::Operator::DIVIDE),
-      std::make_pair("-2", calc::Operator::OPERAND),
+      std::make_pair("-", calc::Operator::NEGATIVE),
+      std::make_pair("2", calc::Operator::OPERAND),
       std::make_pair("^", calc::Operator::POWER),
       std::make_pair("4", calc::Operator::OPERAND)};
   EXPECT_EQ(calc::tokenize("16/-2^4"), expect);
+}
+
+TEST(TokenizerTest, TokAssocFuncUnaryMinus) {
+  std::vector<calc::Token> expect = {
+      std::make_pair("-", calc::Operator::NEGATIVE),
+      std::make_pair("inv", calc::Operator::INVERSE),
+      std::make_pair("-", calc::Operator::NEGATIVE),
+      std::make_pair("(", calc::Operator::L_PAR),
+      std::make_pair("sin", calc::Operator::SIN),
+      std::make_pair("0.5", calc::Operator::OPERAND),
+      std::make_pair(")", calc::Operator::R_PAR),
+      std::make_pair("^", calc::Operator::POWER),
+      std::make_pair("2", calc::Operator::OPERAND)};
+  EXPECT_EQ(calc::tokenize("-inv-(sin0.5)^2"), expect);
 }
 }   // namespace tokenizer_tests

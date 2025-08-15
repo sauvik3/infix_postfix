@@ -23,7 +23,8 @@ enum Operator {
   COS = 13,
   TAN = 14,
   LOG = 15,
-  LN = 16
+  LN = 16,
+  UNKOWN
 };
 static const std::map<std::string, enum Operator> operatorRegexMap = {
     std::make_pair("^\\+", Operator::ADD),
@@ -42,14 +43,14 @@ static const std::map<std::string, enum Operator> operatorRegexMap = {
     std::make_pair("^\\(", Operator::L_PAR),
     std::make_pair("^\\)", Operator::R_PAR),
 };
-static const char operandRegex[] = R"(^[+-]?(?:\d+(?:\.\d*)?|\.\d+))";
+static const char operandRegex[] = R"(^[+]?(?:\d+(?:\.\d*)?|\.\d+))";
 
 static const std::map<enum Operator, int> operatorPrecedence = {
-    std::make_pair(Operator::ADD, 4),
-    std::make_pair(Operator::SUBTRACT, 4),
-    std::make_pair(Operator::MULTIPLY, 3),
-    std::make_pair(Operator::DIVIDE, 3),
-    std::make_pair(Operator::NEGATIVE, 2),
+    std::make_pair(Operator::ADD, 3),
+    std::make_pair(Operator::SUBTRACT, 3),
+    std::make_pair(Operator::MULTIPLY, 2),
+    std::make_pair(Operator::DIVIDE, 2),
+    std::make_pair(Operator::NEGATIVE, 1),
     std::make_pair(Operator::POWER, 1),
     std::make_pair(Operator::SQRT, 1),
     std::make_pair(Operator::INVERSE, 1),
