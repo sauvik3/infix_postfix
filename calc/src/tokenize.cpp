@@ -22,12 +22,12 @@ std::vector<Token> tokenize(const std::string &expInput) {
 
   std::string::const_iterator searchStart(expression.cbegin());
 
-  // Can't have an operand following a right-parenthesis
-  Token prevToken = std::make_pair("0", Operator::OPERAND);
+  Token prevToken = std::make_pair("?", Operator::UNKOWN);
   while (searchStart != expression.cend()) {
     std::regex re = std::regex{calc::operandRegex};
     std::smatch match;
     // Operand
+    // Can't have an operand following a right-parenthesis
     if (prevToken.second != Operator::R_PAR &&
         regex_search(searchStart, expression.cend(), match, re)) {
       searchStart = match.suffix().first;
@@ -42,12 +42,10 @@ std::vector<Token> tokenize(const std::string &expInput) {
       if (regex_search(searchStart, expression.cend(), match, re)) {
         searchStart = match.suffix().first;
         if (re_op_type == Operator::SUBTRACT) {
-          // Binary Operators or Left Parenthesis
-          if (prevToken.second == Operator::ADD ||
-              prevToken.second == Operator::SUBTRACT ||
-              prevToken.second == Operator::MULTIPLY ||
-              prevToken.second == Operator::DIVIDE ||
-              prevToken.second == Operator::L_PAR) {
+          // Minus following an operand or right-parenthesis
+          if ((prevToken.second != Operator::OPERAND &&
+              prevToken.second != Operator::R_PAR) ||
+              prevToken.second == Operator::UNKOWN) {
             result.push_back(std::make_pair(match.str(0), Operator::NEGATIVE));
           } else {
             result.push_back(std::make_pair(match.str(0), re_op_type));

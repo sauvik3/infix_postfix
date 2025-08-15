@@ -60,10 +60,9 @@ The goal is to serve as both a working calculator application and a reference fo
 | Precedence | Operator(s)                                     | Associativity   | Notes                                                            |
 |------------|-------------------------------------------------|-----------------|------------------------------------------------------------------|
 | 0 (highest)| `()`, `(`, `)`                                  | Left-to-right   | Parentheses override precedence                                  |
-| 1          | `^`, `sqrt`, `inv`, `abs`, `sin`, `cos`, `tan`, `log`, `ln` | Right-to-left | Exponentiation, square root, inverse, absolute, trig, and logs   |
-| 2          | `-` (unary)                                     | Right-to-left   | Negates a single operand                                         |
-| 3          | `*`, `/`                                        | Left-to-right   | Multiplication and division                                      |
-| 4 (lowest) | `+`, `-` (binary)                               | Left-to-right   | Addition and subtraction                                         |
+| 1          | `-` (unary), `^`, `sqrt`, `inv`, `abs`, `sin`, `cos`, `tan`, `log`, `ln` | Right-to-left | Unary negation, exponentiation, functions                        |
+| 2          | `*`, `/`                                        | Left-to-right   | Multiplication and division                                      |
+| 3 (lowest) | `+`, `-` (binary)                               | Left-to-right   | Addition and subtraction                                         |
 
 
 ---

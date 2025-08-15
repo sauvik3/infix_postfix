@@ -23,7 +23,15 @@ int comparePrecedence(const Token &token1, const Token &token2) {
 bool isRightAssociative(const Token &tok) {
   switch (tok.second) {
   case Operator::NEGATIVE:
+  case Operator::INVERSE:
   case Operator::POWER:
+  case Operator::ABS:
+  case Operator::SIN:
+  case Operator::COS:
+  case Operator::TAN:
+  case Operator::LOG:
+  case Operator::LN:
+  case Operator::SQRT:
     return true;  // right-associative
   default:
     return false;  // all others are left-associative
@@ -37,19 +45,6 @@ std::stack<Token> infixToPostfix(const std::vector<Token> &tokens) {
   for (const auto &currToken : tokens) {
     if (currToken.second == Operator::OPERAND) {
       postfix.push(currToken);  // 1. Operand
-
-      // Immediately pop any function operators after an operand
-      if (!opStack.empty()) {
-        const Token &topTok = opStack.top();
-        if (topTok.second == Operator::SIN || topTok.second == Operator::COS ||
-            topTok.second == Operator::TAN || topTok.second == Operator::ABS ||
-            topTok.second == Operator::LOG || topTok.second == Operator::LN ||
-            topTok.second == Operator::SQRT ||
-            topTok.second == Operator::INVERSE) {
-          postfix.push(topTok);
-          opStack.pop();
-        }
-      }
     } else {
       if (opStack.empty()) {
         opStack.push(currToken);  // 2. Stack is empty
